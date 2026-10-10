@@ -43,9 +43,12 @@ DATABASE_URL = os.environ.get(
     "DATABASE_URL", f"sqlite:///{os.path.join(BACKEND_DIR, 'cryptopulse.db')}"
 )
 # Supabase/Heroku-style URLs start with postgres:// which SQLAlchemy 2 rejects
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
-
+# Supabase/Heroku-style URLs start with postgres:// (rejected by SQLAlchemy 2) or
+# postgresql:// (which newer SQLAlchemy maps to psycopg v3). Pin the installed driver.
+for _prefix in ("postgres://", "postgresql://"):
+    if DATABASE_URL.startswith(_prefix):
+        DATABASE_URL = DATABASE_URL.replace(_prefix, "postgresql+psycopg2://", 1)
+        break
 CORS_ORIGINS = [
     o.strip() for o in os.environ.get(
         "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
