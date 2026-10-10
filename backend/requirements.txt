@@ -1,0 +1,19 @@
+# Backend API (Phase 15-16). Also installs what the ML pipeline needs so the
+# server can build its own models on first start (see start.sh).
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+psycopg2-binary>=2.9      # PostgreSQL / Supabase driver
+pandas>=2.1.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+xgboost>=2.0.0
+shap>=0.45.0
+joblib>=1.3.0
+matplotlib>=3.8.0
+yfinance>=0.2.40
+httpx>=0.27              # Ask CryptoPulse AI mode (LLM API calls)
+bcrypt>=4.1               # password hashing (Sign in / Sign up)
+PyJWT>=2.8                # session tokens
+# tensorflow is intentionally NOT here: it's ~500MB and too heavy for free
+# hosting tiers. The API uses the LSTM automatically if tensorflow is installed.

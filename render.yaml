@@ -1,0 +1,19 @@
+# Render Blueprint (Phase 22) - https://render.com/docs/blueprint-spec
+# In Render: New + -> Blueprint -> pick this repo. Then fill in the two
+# secret env vars (DATABASE_URL, CORS_ORIGINS) when prompted.
+services:
+  - type: web
+    name: cryptopulse-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false          # paste your Supabase connection string
+      - key: CORS_ORIGINS
+        sync: false          # e.g. https://cryptopulse-ai.vercel.app
+      - key: REFRESH_ON_START
+        value: "1"

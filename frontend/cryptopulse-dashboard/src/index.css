@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CryptoPulse AI - dark "market terminal" theme.
+   Series colors are the validated dark-surface categorical steps, so model
+   colors stay colorblind-distinguishable. Up/down always ships with ▲/▼. */
+:root {
+  color-scheme: dark;
+  --page: #06080d;
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-solid: #0d1119;
+  --raised: rgba(255, 255, 255, 0.06);
+  --ink: #f4f6fb;
+  --ink-2: #a9b1c3;
+  --muted: #6b7489;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --grid: rgba(255, 255, 255, 0.06);
+  --axis: rgba(255, 255, 255, 0.14);
+
+  --accent: #38bdf8;
+  --accent-2: #a78bfa;
+  --glow: rgba(56, 189, 248, 0.35);
+
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+
+  --pos: #38bdf8;
+  --neg: #f0607a;
+  --band: rgba(148, 163, 184, 0.12);
+
+  --good: #22c55e;
+  --warn: #fab219;
+  --serious: #fb923c;
+  --critical: #ef4444;
+  --good-text: #4ade80;
+  --bad-text: #fb7185;
+  --warn-text: #fbbf24;
+}
+
+html,
+body {
+  background: var(--page);
+  color: var(--ink);
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ambient glows behind the whole app */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 500px at 12% -10%, rgba(139, 92, 246, 0.18), transparent 60%),
+    radial-gradient(800px 500px at 100% 0%, rgba(56, 189, 248, 0.14), transparent 60%),
+    radial-gradient(700px 600px at 50% 110%, rgba(20, 241, 149, 0.06), transparent 60%),
+    var(--page);
+}
+.app-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
+}
+
+.font-display {
+  font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.tabular,
+.font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.glass {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 20px 40px -24px rgba(0, 0, 0, 0.8);
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.3s ease;
+}
+/* spotlight that follows the pointer (--mx/--my set in main.jsx) */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1; /* backdrop-filter makes .glass a stacking context, so this sits behind the text */
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(56, 189, 248, 0.10), transparent 45%);
+}
+.glass:hover::before {
+  opacity: 1;
+}
+.glass:hover {
+  border-color: rgba(56, 189, 248, 0.28);
+}
+
+/* "move forward" on hover */
+.lift:hover {
+  transform: translateY(-5px) scale(1.006);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 34px 60px -28px rgba(0, 0, 0, 0.95),
+    0 0 44px -16px var(--glow);
+}
+
+/* 3D tilt for small cards (--rx/--ry set in main.jsx) */
+.tilt {
+  transform-style: preserve-3d;
+  transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+.tilt:hover {
+  transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px) scale(1.02);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 30px 50px -26px rgba(0, 0, 0, 0.95),
+    0 0 36px -14px var(--glow);
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #7dd3fc, #a78bfa 55%, #f0abfc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brand-gradient {
+  background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+}
+
+/* Recharts: keep chrome recessive */
+.recharts-cartesian-grid line {
+  stroke: var(--grid);
+}
+.recharts-cartesian-axis-tick-value {
+  fill: var(--muted);
+  font-size: 11px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+.recharts-cartesian-axis-line,
+.recharts-cartesian-axis-tick-line {
+  stroke: var(--axis);
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 100%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes live-ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  80%, 100% { transform: scale(2.4); opacity: 0; }
+}
+.live-dot {
+  position: relative;
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: inherit;
+  animation: live-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.rise {
+  animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+.stagger > * { animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+.stagger > *:nth-child(2) { animation-delay: 0.06s; }
+.stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger > *:nth-child(4) { animation-delay: 0.18s; }
+
+@keyframes progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  animation: ticker 40s linear infinite;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; border: 2px solid var(--page); }
+::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- illustration motion ---------- */
+@keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.float-a { animation: float-y 5s ease-in-out infinite; }
+.float-b { animation: float-y 6.5s ease-in-out infinite; animation-delay: -2s; }
+.float-c { animation: float-y 4.2s ease-in-out infinite; animation-delay: -1s; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin-slow { animation: spin 26s linear infinite; }
+.spin-rev { animation: spin 18s linear infinite reverse; }
+
+@keyframes twinkle { 0%, 100% { opacity: 0.15; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1); } }
+.twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 2.8s ease-in-out infinite; }
+
+@keyframes pulse-ring-k { 0%, 100% { opacity: 0.55; transform: scale(0.92); } 50% { opacity: 1; transform: scale(1.05); } }
+.pulse-ring { transform-box: fill-box; transform-origin: center; animation: pulse-ring-k 3.2s ease-in-out infinite; }
+.pulse-fast { transform-box: fill-box; transform-origin: center; animation: pulse-ring-k 0.9s ease-in-out infinite; }
+
+@keyframes draw { from { stroke-dashoffset: 420; } to { stroke-dashoffset: 0; } }
+.draw-line { stroke-dasharray: 420; animation: draw 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+/* chat typing indicator */
+@keyframes typing { 0%, 80%, 100% { transform: translateY(0); opacity: 0.35; } 40% { transform: translateY(-4px); opacity: 1; } }
+.typing span { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: var(--accent); animation: typing 1.2s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.15s; }
+.typing span:nth-child(3) { animation-delay: 0.3s; }
+
+/* floating assistant button */
+@keyframes halo { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.45); } 100% { box-shadow: 0 0 0 18px rgba(56, 189, 248, 0); } }
+.halo { animation: halo 2.2s ease-out infinite; }
+
+input[type="number"]::-webkit-inner-spin-button { opacity: 0.4; }
